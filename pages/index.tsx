@@ -10,6 +10,7 @@ export default function Home() {
   return (
     <div className="mx-auto py-8 w-full max-w-[296px] sm:max-w-[480px]">
       <Head>
+        <link rel="icon" href="/favicon.ico" />
         <title>2048 Clone</title>
       </Head>
       <header className="flex items-center justify-between mb-2">
