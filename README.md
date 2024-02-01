@@ -17,7 +17,7 @@ The game is a single-page application that allows you to play 2048 right in your
 To get started with the game, follow these steps:
 
 1. Clone the repository
-2. Install the dependencies: `npm install`
+2. Install the dependencies: `npm install` 
 3. Start the development server: `npm run dev`
 4. Open your browser and navigate
 
