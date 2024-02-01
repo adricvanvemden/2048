@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import Board from '@/components/Board';
 import Score from '@/components/Score';
 import { useContext } from 'react';
@@ -9,10 +8,6 @@ export default function Home() {
 
   return (
     <div className="mx-auto py-8 w-full max-w-[296px] sm:max-w-[480px]">
-      <Head>
-        <link rel="icon" href="./favicon.ico?" />
-        <title>2048 Clone</title>
-      </Head>
       <header className="flex items-center justify-between mb-2">
         <h1 className="text-4xl sm:text-6xl">2048</h1>
         <Score />
