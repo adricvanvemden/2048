@@ -77,7 +77,7 @@ export default function Board() {
 
   const renderTiles = useMemo(() => {
     return getTiles().map((tile: TileModel) => {
-      return <Tile key={`tile-${tile.id}`} {...tile} />;
+      return tile ? <Tile key={`tile-${tile.id}`} {...tile} /> : null;
     });
   }, [getTiles]);
 
