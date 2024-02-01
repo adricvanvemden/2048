@@ -15,7 +15,7 @@ export default function Home() {
       <main>
         <Board />
         <span className="gap-3 flex flex-col mt-3 text-sm sm:text-base">
-          <p>Use the W/A/S/D or the arrow keys to move the tiles in the corresponding direction.</p>
+          <p>Swipe or use the W/A/S/D or the arrow keys to move the tiles in the corresponding direction.</p>
           <p>When two tiles with the same number touch, they merge into one!</p>
           <p>The goal is to create a tile with the number 2048.</p>
         </span>
