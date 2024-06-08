@@ -94,9 +94,16 @@ export default function GameProvider({ children }: PropsWithChildren) {
     { trailing: false },
   );
 
+  function getRandomPosition() {
+    return Math.floor(Math.random() * 4);
+  }
+
   const startGame = () => {
-    dispatch({ type: 'create_tile', tile: { position: [0, 1], value: 2 } });
-    dispatch({ type: 'create_tile', tile: { position: [0, 2], value: 2 } });
+    const firstTile: Tile = { position: [getRandomPosition(), getRandomPosition()], value: 2 };
+    const secondTile: Tile = { position: [getRandomPosition(), getRandomPosition()], value: 2 };
+    dispatch({ type: 'create_tile', tile: firstTile });
+    dispatch({ type: 'create_tile', tile: secondTile });
+    saveToHistory();
   };
 
   const restartGame = () => {
@@ -108,11 +115,16 @@ export default function GameProvider({ children }: PropsWithChildren) {
     dispatch({ type: 'undo_move' });
   };
 
+  const saveToHistory = () => {
+    dispatch({ type: 'save_to_history' });
+  };
+
   useEffect(() => {
     if (gameState.hasChanged) {
       setTimeout(() => {
         dispatch({ type: 'clean_up' });
         appendRandomTile();
+        saveToHistory();
       }, MERGE_ANIMATION_DURATION);
     }
   }, [appendRandomTile, gameState.hasChanged]);

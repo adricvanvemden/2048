@@ -25,7 +25,8 @@ type Action =
   | { type: 'clean_up' }
   | { type: 'game_over' }
   | { type: 'game_reset' }
-  | { type: 'undo_move' };
+  | { type: 'undo_move' }
+  | { type: 'save_to_history' };
 
 function createBoard() {
   const board: string[][] = [];
@@ -132,18 +133,6 @@ export default function gameReducer(state: GameState = initialState, action: Act
       return {
         ...state,
         board: newBoard,
-        history: [
-          ...state.history,
-          {
-            board: newBoard,
-            score: state.score,
-            tiles: {
-              ...state.tiles,
-              [tileId]: { id: tileId, ...action.tile },
-            },
-            tilesByIds: [...state.tilesByIds, tileId],
-          },
-        ],
         tiles: {
           ...state.tiles,
           [tileId]: { id: tileId, ...action.tile },
@@ -157,27 +146,17 @@ export default function gameReducer(state: GameState = initialState, action: Act
     case 'move_left':
     case 'move_right': {
       const newState = move(state, action.type);
-      const newHistory = [
-        ...state.history,
-        {
-          board: newState.board,
-          score: newState.score,
-          tiles: newState.tiles,
-          tilesByIds: newState.tilesByIds,
-        },
-      ];
       return {
         ...newState,
-        history: newHistory,
       };
     }
     case 'undo_move': {
-      if (state.history.length > 2) {
-        const lastGameState = { ...state.history[state.history.length - 3] };
+      if (state.history.length > 1) {
+        const lastGameState = { ...state.history[state.history.length - 2] };
         return {
           ...state,
           ...lastGameState,
-          history: state.history.slice(0, -2),
+          history: state.history.slice(0, -1),
         };
       }
       return state; // If there are no more moves to undo, return the current state
@@ -192,6 +171,21 @@ export default function gameReducer(state: GameState = initialState, action: Act
     }
     case 'game_reset': {
       return initialState;
+    }
+    case 'save_to_history': {
+      const newHistory = [
+        ...state.history,
+        {
+          board: state.board,
+          score: state.score,
+          tiles: state.tiles,
+          tilesByIds: state.tilesByIds,
+        },
+      ];
+      return {
+        ...state,
+        history: newHistory,
+      };
     }
     default:
       return state;
