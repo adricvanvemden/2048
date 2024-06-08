@@ -10,6 +10,7 @@ export type GameState = {
   tilesByIds: string[];
   hasChanged: boolean;
   score: number;
+  highscore: number;
   isGameOver: boolean;
   history: GameStateHistory[];
   coins: number;
@@ -63,14 +64,18 @@ const move = (state: GameState, direction: MoveDirection) => {
 
       if (tileId) {
         if (prevTile?.value === currentTile.value) {
+          const newScore = score + prevTile.value * 2;
           const prevScoreHundreds = Math.floor(score / 100);
-          score += prevTile.value * 2;
-          const newScoreHundreds = Math.floor(score / 100);
+          const newScoreHundreds = Math.floor(newScore / 100);
+
+          if (newScore > score) {
+            state.highscore = newScore;
+          }
 
           if (newScoreHundreds > prevScoreHundreds) {
             coins += 5;
           }
-
+          score = newScore;
           newTiles[prevTile.id as string] = {
             ...prevTile,
             value: prevTile.value * 2,
@@ -117,6 +122,7 @@ export const initialState = {
   tilesByIds: [],
   hasChanged: false,
   score: 0,
+  highscore: 0,
   isGameOver: false,
   history: [],
   coins: 0,

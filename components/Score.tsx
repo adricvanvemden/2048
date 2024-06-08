@@ -1,25 +1,8 @@
 import { GameContext } from '@/context/GameContext';
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 
 export default function Score() {
-  const { score } = useContext(GameContext);
-  const [highScore, setHighScore] = useState(0);
-
-  // Load the high score from localStorage when the component mounts
-  useEffect(() => {
-    const savedHighScore = localStorage.getItem('highScore');
-    if (savedHighScore) {
-      setHighScore(Number(savedHighScore));
-    }
-  }, []);
-
-  // Update the high score in state and localStorage whenever the score increases
-  useEffect(() => {
-    if (score > highScore) {
-      setHighScore(score);
-      localStorage.setItem('highScore', String(score));
-    }
-  }, [score, highScore]);
+  const { highScore, score } = useContext(GameContext);
 
   return (
     <div className="flex gap-4">

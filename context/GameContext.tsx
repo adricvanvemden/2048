@@ -6,6 +6,7 @@ import { createContext, PropsWithChildren, useCallback, useEffect, useReducer } 
 
 export const GameContext = createContext({
   score: 0,
+  highScore: 0,
   isGameOver: false,
   getTiles: () => [] as Tile[],
   moveTiles: (_: MoveDirection) => {},
@@ -141,6 +142,7 @@ export default function GameProvider({ children }: PropsWithChildren) {
   return (
     <GameContext.Provider
       value={{
+        highScore: gameState.highscore,
         score: gameState.score,
         isGameOver: gameState.isGameOver,
         history: gameState.history,
