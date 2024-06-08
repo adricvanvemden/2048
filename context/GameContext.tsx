@@ -116,7 +116,7 @@ export default function GameProvider({ children }: PropsWithChildren) {
   };
 
   const undoMove = (cost: number, moves: number) => {
-    if (gameState.coins >= cost) {
+    if (gameState.coins >= cost && gameState.history.length > moves) {
       dispatch({ type: 'undo_move', moves });
       dispatch({ type: 'remove_coins', coins: cost });
     }
