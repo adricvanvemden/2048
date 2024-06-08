@@ -11,7 +11,11 @@ export type GameState = {
   hasChanged: boolean;
   score: number;
   isGameOver: boolean;
+  history: GameStateHistory[];
 };
+
+export type GameStateHistory = Pick<GameState, 'board' | 'score' | 'tiles' | 'tilesByIds'>;
+
 type Action =
   | { type: 'create_tile'; tile: Tile }
   | { type: 'move_up' }
@@ -20,7 +24,8 @@ type Action =
   | { type: 'move_right' }
   | { type: 'clean_up' }
   | { type: 'game_over' }
-  | { type: 'game_reset' };
+  | { type: 'game_reset' }
+  | { type: 'undo_move' };
 
 function createBoard() {
   const board: string[][] = [];
@@ -97,6 +102,7 @@ export const initialState = {
   hasChanged: false,
   score: 0,
   isGameOver: false,
+  history: [],
 };
 
 export default function gameReducer(state: GameState = initialState, action: Action): GameState {
@@ -126,6 +132,18 @@ export default function gameReducer(state: GameState = initialState, action: Act
       return {
         ...state,
         board: newBoard,
+        history: [
+          ...state.history,
+          {
+            board: newBoard,
+            score: state.score,
+            tiles: {
+              ...state.tiles,
+              [tileId]: { id: tileId, ...action.tile },
+            },
+            tilesByIds: [...state.tilesByIds, tileId],
+          },
+        ],
         tiles: {
           ...state.tiles,
           [tileId]: { id: tileId, ...action.tile },
@@ -138,11 +156,37 @@ export default function gameReducer(state: GameState = initialState, action: Act
     case 'move_down':
     case 'move_left':
     case 'move_right': {
-      return move(state, action.type);
+      const newState = move(state, action.type);
+      const newHistory = [
+        ...state.history,
+        {
+          board: newState.board,
+          score: newState.score,
+          tiles: newState.tiles,
+          tilesByIds: newState.tilesByIds,
+        },
+      ];
+      return {
+        ...newState,
+        history: newHistory,
+      };
+    }
+    case 'undo_move': {
+      if (state.history.length > 2) {
+        const lastGameState = { ...state.history[state.history.length - 3] };
+        return {
+          ...state,
+          ...lastGameState,
+          history: state.history.slice(0, -2),
+        };
+      }
+      return state; // If there are no more moves to undo, return the current state
     }
     case 'game_over': {
+      const { board, score, tiles, tilesByIds } = state;
       return {
         ...state,
+        history: [...state.history, { board, score, tiles, tilesByIds }],
         isGameOver: true,
       };
     }

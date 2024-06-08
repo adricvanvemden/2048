@@ -1,7 +1,7 @@
 import { MERGE_ANIMATION_DURATION, TILE_COUNT_PER_DIMENSION } from '@/constants';
 import useThrottle from '@/utils/hooks/useThrottle';
 import { MoveDirection, Tile } from '@/types/types';
-import gameReducer, { initialState } from '@/reducers/GameReducer';
+import gameReducer, { GameState, initialState } from '@/reducers/GameReducer';
 import { createContext, PropsWithChildren, useCallback, useEffect, useReducer } from 'react';
 
 export const GameContext = createContext({
@@ -11,6 +11,8 @@ export const GameContext = createContext({
   moveTiles: (_: MoveDirection) => {},
   startGame: () => {},
   restartGame: () => {},
+  undoMove: () => {},
+  history: [] as Pick<GameState, 'board' | 'score' | 'tiles' | 'tilesByIds'>[],
 });
 
 export default function GameProvider({ children }: PropsWithChildren) {
@@ -102,6 +104,10 @@ export default function GameProvider({ children }: PropsWithChildren) {
     startGame();
   };
 
+  const undoMove = () => {
+    dispatch({ type: 'undo_move' });
+  };
+
   useEffect(() => {
     if (gameState.hasChanged) {
       setTimeout(() => {
@@ -113,7 +119,16 @@ export default function GameProvider({ children }: PropsWithChildren) {
 
   return (
     <GameContext.Provider
-      value={{ score: gameState.score, isGameOver: gameState.isGameOver, getTiles, moveTiles, startGame, restartGame }}
+      value={{
+        score: gameState.score,
+        isGameOver: gameState.isGameOver,
+        history: gameState.history,
+        getTiles,
+        moveTiles,
+        startGame,
+        restartGame,
+        undoMove,
+      }}
     >
       {children}
     </GameContext.Provider>

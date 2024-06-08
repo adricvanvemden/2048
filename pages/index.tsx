@@ -3,9 +3,11 @@ import Board from '@/components/Board';
 import Score from '@/components/Score';
 import { useContext } from 'react';
 import { GameContext } from '@/context/GameContext';
+import UndoButton from '@/components/UndoButton';
+import { History } from '@/components/History';
 
 export default function Home() {
-  const { score, isGameOver, restartGame } = useContext(GameContext);
+  const { score, isGameOver, restartGame, history } = useContext(GameContext);
 
   return (
     <div className="mx-auto py-8 w-full max-w-[296px] sm:max-w-[480px]">
@@ -15,6 +17,7 @@ export default function Home() {
       </Head>
       <header className="flex items-center justify-between mb-2">
         <h1 className="text-4xl sm:text-6xl">2048</h1>
+        <UndoButton />
         <Score />
       </header>
       <main>
@@ -24,6 +27,7 @@ export default function Home() {
           <p>When two tiles with the same number touch, they merge into one!</p>
           <p>The goal is to create a tile with the number 2048.</p>
         </span>
+        <History history={history} />
       </main>
       {isGameOver && (
         <div className="fixed inset-0 pb-[50vh] z-10 bg-black/50 flex flex-col items-center justify-center text-text-secondary">

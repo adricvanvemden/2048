@@ -2,6 +2,7 @@ export type Tile = {
   id?: string;
   position: [number, number];
   value: number;
+  preview?: boolean;
 };
 
 export type TileMap = { [id: string]: Tile };
