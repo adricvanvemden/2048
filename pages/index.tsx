@@ -5,6 +5,7 @@ import { useContext } from 'react';
 import { GameContext } from '@/context/GameContext';
 import UndoButton from '@/components/UndoButton';
 import { History } from '@/components/History';
+import Coins from '@/components/Coins';
 
 export default function Home() {
   const { score, isGameOver, restartGame, history } = useContext(GameContext);
@@ -17,6 +18,7 @@ export default function Home() {
       </Head>
       <header className="flex items-center justify-between mb-2">
         <h1 className="text-4xl sm:text-6xl">2048</h1>
+        <Coins />
         <UndoButton />
         <Score />
       </header>

@@ -13,6 +13,8 @@ export const GameContext = createContext({
   restartGame: () => {},
   undoMove: () => {},
   history: [] as Pick<GameState, 'board' | 'score' | 'tiles' | 'tilesByIds'>[],
+  coins: 0,
+  continueGame: (_: GameState) => {},
 });
 
 export default function GameProvider({ children }: PropsWithChildren) {
@@ -112,11 +114,18 @@ export default function GameProvider({ children }: PropsWithChildren) {
   };
 
   const undoMove = () => {
-    dispatch({ type: 'undo_move' });
+    if (gameState.coins >= 3) {
+      dispatch({ type: 'undo_move' });
+      dispatch({ type: 'remove_coins', coins: 3 });
+    }
   };
 
   const saveToHistory = () => {
     dispatch({ type: 'save_to_history' });
+  };
+
+  const continueGame = (oldState: GameState) => {
+    dispatch({ type: 'continue_game', gameState: oldState });
   };
 
   useEffect(() => {
@@ -140,6 +149,8 @@ export default function GameProvider({ children }: PropsWithChildren) {
         startGame,
         restartGame,
         undoMove,
+        coins: gameState.coins || 0,
+        continueGame,
       }}
     >
       {children}

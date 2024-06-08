@@ -24,7 +24,7 @@ const keyActionMap: { [key in KeyActionKeys]?: MoveDirection } = {
 };
 
 export default function Board() {
-  const { getTiles, moveTiles, startGame } = useContext(GameContext);
+  const { getTiles, moveTiles, startGame, continueGame } = useContext(GameContext);
   const initialized = useRef(false);
 
   const handleKeyDown = useCallback(
@@ -83,7 +83,14 @@ export default function Board() {
 
   useEffect(() => {
     if (!initialized.current) {
-      startGame();
+      //chek localStorage for old gamestate
+      const prevGameState = localStorage.getItem('gameState');
+
+      if (prevGameState) {
+        continueGame(JSON.parse(prevGameState));
+      } else {
+        startGame();
+      }
       initialized.current = true;
     }
   }, [startGame]);

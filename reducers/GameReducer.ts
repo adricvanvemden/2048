@@ -12,6 +12,7 @@ export type GameState = {
   score: number;
   isGameOver: boolean;
   history: GameStateHistory[];
+  coins: number;
 };
 
 export type GameStateHistory = Pick<GameState, 'board' | 'score' | 'tiles' | 'tilesByIds'>;
@@ -26,7 +27,10 @@ type Action =
   | { type: 'game_over' }
   | { type: 'game_reset' }
   | { type: 'undo_move' }
-  | { type: 'save_to_history' };
+  | { type: 'save_to_history' }
+  | { type: 'add_coins'; coins: number }
+  | { type: 'remove_coins'; coins: number }
+  | { type: 'continue_game'; gameState: GameState };
 
 function createBoard() {
   const board: string[][] = [];
@@ -40,7 +44,7 @@ const move = (state: GameState, direction: MoveDirection) => {
   const newBoard = createBoard();
   const newTiles: TileMap = {};
   let hasChanged = false;
-  let { score } = state;
+  let { score, coins } = state;
 
   const isUpOrLeft = direction === 'move_up' || direction === 'move_left';
   const isVertical = direction === 'move_up' || direction === 'move_down';
@@ -59,7 +63,14 @@ const move = (state: GameState, direction: MoveDirection) => {
 
       if (tileId) {
         if (prevTile?.value === currentTile.value) {
+          const prevScoreHundreds = Math.floor(score / 100);
           score += prevTile.value * 2;
+          const newScoreHundreds = Math.floor(score / 100);
+
+          if (newScoreHundreds > prevScoreHundreds) {
+            coins += 5;
+          }
+
           newTiles[prevTile.id as string] = {
             ...prevTile,
             value: prevTile.value * 2,
@@ -93,7 +104,11 @@ const move = (state: GameState, direction: MoveDirection) => {
     }
   }
 
-  return { ...state, board: newBoard, tiles: newTiles, hasChanged, score };
+  return { ...state, board: newBoard, tiles: newTiles, hasChanged, score, coins };
+};
+
+const saveToLocalStorage = (state: GameState) => {
+  localStorage.setItem('gameState', JSON.stringify(state));
 };
 
 export const initialState = {
@@ -104,9 +119,12 @@ export const initialState = {
   score: 0,
   isGameOver: false,
   history: [],
+  coins: 0,
 };
 
 export default function gameReducer(state: GameState = initialState, action: Action): GameState {
+  let newState = { ...state };
+
   switch (action.type) {
     case 'clean_up': {
       const flattenBoard = flattenDeep(state.board);
@@ -117,12 +135,13 @@ export default function gameReducer(state: GameState = initialState, action: Act
         return { ...acc, [tileId]: state.tiles[tileId] };
       }, {});
 
-      return {
+      newState = {
         ...state,
         tiles: newTiles,
         tilesByIds: Object.keys(newTiles),
         hasChanged: true,
       };
+      break;
     }
     case 'create_tile': {
       const tileId = uid();
@@ -130,7 +149,7 @@ export default function gameReducer(state: GameState = initialState, action: Act
       const newBoard = JSON.parse(JSON.stringify(state.board));
       newBoard[y][x] = tileId;
 
-      return {
+      newState = {
         ...state,
         board: newBoard,
         tiles: {
@@ -140,38 +159,38 @@ export default function gameReducer(state: GameState = initialState, action: Act
         tilesByIds: [...state.tilesByIds, tileId],
         hasChanged: false,
       };
+      break;
     }
     case 'move_up':
     case 'move_down':
     case 'move_left':
     case 'move_right': {
-      const newState = move(state, action.type);
-      return {
-        ...newState,
-      };
+      newState = move(state, action.type);
+      break;
     }
     case 'undo_move': {
       if (state.history.length > 1) {
         const lastGameState = { ...state.history[state.history.length - 2] };
-        return {
+        newState = {
           ...state,
           ...lastGameState,
           history: state.history.slice(0, -1),
         };
       }
-      return state; // If there are no more moves to undo, return the current state
+      break;
     }
     case 'game_over': {
       const { board, score, tiles, tilesByIds } = state;
-      return {
+      newState = {
         ...state,
         history: [...state.history, { board, score, tiles, tilesByIds }],
         isGameOver: true,
       };
+      break;
     }
-    case 'game_reset': {
-      return initialState;
-    }
+    case 'game_reset':
+      newState = initialState;
+      break;
     case 'save_to_history': {
       const newHistory = [
         ...state.history,
@@ -182,12 +201,27 @@ export default function gameReducer(state: GameState = initialState, action: Act
           tilesByIds: state.tilesByIds,
         },
       ];
-      return {
-        ...state,
-        history: newHistory,
-      };
+      newState = { ...state, history: newHistory };
+      break;
     }
+    case 'add_coins':
+      newState = {
+        ...state,
+        coins: state.coins ? state.coins + action.coins : action.coins,
+      };
+      break;
+    case 'remove_coins':
+      newState = {
+        ...state,
+        coins: state.coins ? state.coins - action.coins : 0,
+      };
+      break;
+    case 'continue_game':
+      newState = action.gameState;
+      break;
     default:
       return state;
   }
+  saveToLocalStorage(newState);
+  return newState;
 }
