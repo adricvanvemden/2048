@@ -31,6 +31,7 @@ const PreviewBoard: React.FC<PreviewBoardProps> = ({ historyState }) => {
   const renderTiles = useMemo(() => {
     return tilesByIds
       .map((tileId: string) => tiles[tileId])
+      .filter((tile: TileModel | undefined): tile is TileModel => Boolean(tile))
       .map((tile: TileModel) => {
         return <Tile key={`tile-${tile.id}`} {...tile} preview />;
       });

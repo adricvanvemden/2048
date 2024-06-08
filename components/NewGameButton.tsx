@@ -1,19 +1,17 @@
 import { useContext } from 'react';
 import { GameContext } from '@/context/GameContext';
 
-const UndoButton = () => {
-  const { undoMove, coins } = useContext(GameContext);
-  const hasEnoughCoins = coins >= 3;
+const NewGameButton = () => {
+  const { restartGame } = useContext(GameContext);
 
   return (
     <div
-      title={hasEnoughCoins ? 'Undo last move for 3 coins' : 'Not enough coins'}
+      title="Start a new game"
       className="font-bold text-center uppercase text-sm sm:text-base bg-background-secondary text-text-primary rounded-md py-1 px-2"
     >
-      Undo <div className="text-xl sm:text-2xl text-text-secondary"></div>
+      New game <div className="text-xl sm:text-2xl text-text-secondary"></div>
       <button
-        onClick={() => undoMove(3, 1)}
-        disabled={!hasEnoughCoins}
+        onClick={restartGame}
         className="font-bold text-center uppercase text-sm sm:text-base bg-background-secondary text-text-secondary rounded-md py-1 px-2 disabled:text-text-primary"
       >
         <svg
@@ -27,12 +25,12 @@ const UndoButton = () => {
           stroke-linecap="round"
           stroke-linejoin="round"
         >
-          <path d="M3 7v6h6" />
-          <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13" />
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+          <path d="M3 3v5h5" />
         </svg>
       </button>
     </div>
   );
 };
 
-export default UndoButton;
+export default NewGameButton;

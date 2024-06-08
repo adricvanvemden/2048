@@ -12,8 +12,8 @@ export const GameContext = createContext({
   moveTiles: (_: MoveDirection) => {},
   startGame: () => {},
   restartGame: () => {},
-  undoMove: () => {},
-  history: [] as Pick<GameState, 'board' | 'score' | 'tiles' | 'tilesByIds'>[],
+  undoMove: (cost: number, moves: number) => {},
+  history: [] as Pick<GameState, 'board' | 'score' | 'tiles' | 'tilesByIds' | 'isGameOver'>[],
   coins: 0,
   continueGame: (_: GameState) => {},
 });
@@ -85,7 +85,7 @@ export default function GameProvider({ children }: PropsWithChildren) {
   }, [getEmptyCells, isGameOver]);
 
   const getTiles = () => {
-    return gameState.tilesByIds.map((tileId: string) => gameState.tiles[tileId]);
+    return gameState.tilesByIds.map((tileId: string) => gameState.tiles[tileId]).filter(Boolean);
   };
 
   const moveTiles = useThrottle(
@@ -111,13 +111,14 @@ export default function GameProvider({ children }: PropsWithChildren) {
 
   const restartGame = () => {
     dispatch({ type: 'game_reset' });
+    saveToHistory();
     startGame();
   };
 
-  const undoMove = () => {
-    if (gameState.coins >= 3) {
-      dispatch({ type: 'undo_move' });
-      dispatch({ type: 'remove_coins', coins: 3 });
+  const undoMove = (cost: number, moves: number) => {
+    if (gameState.coins >= cost) {
+      dispatch({ type: 'undo_move', moves });
+      dispatch({ type: 'remove_coins', coins: cost });
     }
   };
 

@@ -16,9 +16,9 @@ export type GameState = {
   coins: number;
 };
 
-export type GameStateHistory = Pick<GameState, 'board' | 'score' | 'tiles' | 'tilesByIds'>;
+export type GameStateHistory = Pick<GameState, 'board' | 'score' | 'tiles' | 'tilesByIds' | 'isGameOver'>;
 
-type Action =
+export type Action =
   | { type: 'create_tile'; tile: Tile }
   | { type: 'move_up' }
   | { type: 'move_down' }
@@ -27,7 +27,7 @@ type Action =
   | { type: 'clean_up' }
   | { type: 'game_over' }
   | { type: 'game_reset' }
-  | { type: 'undo_move' }
+  | { type: 'undo_move'; moves: number }
   | { type: 'save_to_history' }
   | { type: 'add_coins'; coins: number }
   | { type: 'remove_coins'; coins: number }
@@ -45,7 +45,7 @@ const move = (state: GameState, direction: MoveDirection) => {
   const newBoard = createBoard();
   const newTiles: TileMap = {};
   let hasChanged = false;
-  let { score, coins } = state;
+  let { score, coins, highscore } = state;
 
   const isUpOrLeft = direction === 'move_up' || direction === 'move_left';
   const isVertical = direction === 'move_up' || direction === 'move_down';
@@ -68,7 +68,7 @@ const move = (state: GameState, direction: MoveDirection) => {
           const prevScoreHundreds = Math.floor(score / 100);
           const newScoreHundreds = Math.floor(newScore / 100);
 
-          if (newScore > score) {
+          if (newScore > highscore) {
             state.highscore = newScore;
           }
 
@@ -175,27 +175,27 @@ export default function gameReducer(state: GameState = initialState, action: Act
       break;
     }
     case 'undo_move': {
-      if (state.history.length > 1) {
-        const lastGameState = { ...state.history[state.history.length - 2] };
+      if (state.history.length > action.moves) {
+        const prevGameState = { ...state.history[state.history.length - (action.moves + 1)] };
         newState = {
           ...state,
-          ...lastGameState,
-          history: state.history.slice(0, -1),
+          ...prevGameState,
+          history: state.history.slice(0, -action.moves),
         };
       }
       break;
     }
     case 'game_over': {
-      const { board, score, tiles, tilesByIds } = state;
+      const { board, score, tiles, tilesByIds, isGameOver } = state;
       newState = {
         ...state,
-        history: [...state.history, { board, score, tiles, tilesByIds }],
+        history: [...state.history, { board, score, tiles, tilesByIds, isGameOver }],
         isGameOver: true,
       };
       break;
     }
     case 'game_reset':
-      newState = initialState;
+      newState = { ...initialState, highscore: state.highscore, coins: state.coins };
       break;
     case 'save_to_history': {
       const newHistory = [
@@ -205,6 +205,7 @@ export default function gameReducer(state: GameState = initialState, action: Act
           score: state.score,
           tiles: state.tiles,
           tilesByIds: state.tilesByIds,
+          isGameOver: state.isGameOver,
         },
       ];
       newState = { ...state, history: newHistory };

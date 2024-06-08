@@ -10,7 +10,7 @@ const MOVE_DOWN = 'move_down';
 const MOVE_LEFT = 'move_left';
 const MOVE_RIGHT = 'move_right';
 
-type KeyActionKeys = 'ArrowUp' | 'KeyW' | 'ArrowDown' | 'KeyS' | 'ArrowLeft' | 'KeyA' | 'ArrowRight' | 'KeyD';
+type KeyActionKeys = 'ArrowUp' | 'KeyW' | 'ArrowDown' | 'KeyS' | 'ArrowLeft' | 'KeyA' | 'ArrowRight' | 'KeyD' | 'KeyZ';
 
 const keyActionMap: { [key in KeyActionKeys]?: MoveDirection } = {
   ArrowUp: MOVE_UP,
@@ -83,7 +83,7 @@ export default function Board() {
 
   useEffect(() => {
     if (!initialized.current) {
-      //chek localStorage for old gamestate
+      //check localStorage for old gamestate
       const prevGameState = localStorage.getItem('gameState');
 
       if (prevGameState) {
