@@ -21,7 +21,7 @@ const GameOver = () => {
   }
 
   return (
-    <div className="fixed inset-0 z-10 bg-black/90 flex items-center justify-center text-text-secondary">
+    <div className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center text-text-secondary">
       <div className="flex flex-col gap-4">
         <h2 className="text-5xl mb-12 uppercase underline underline-offset-4 text-center">Game Over</h2>
         <div className="flex items-center justify-between">
