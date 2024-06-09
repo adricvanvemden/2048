@@ -1,7 +1,9 @@
-import { GameStateHistory } from '@/reducers/GameReducer';
 import PreviewBoard from './PreviewBoard';
+import { useContext } from 'react';
+import { GameContext } from '@/context/GameContext';
 
-export const History = ({ history }: { history: GameStateHistory[] }) => {
+export const History = () => {
+  const { history } = useContext(GameContext);
   const showMax = 3;
 
   return (

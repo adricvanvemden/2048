@@ -1,8 +1,6 @@
 import Head from 'next/head';
 import Board from '@/components/Board';
 import Score from '@/components/Score';
-import { useContext } from 'react';
-import { GameContext } from '@/context/GameContext';
 import UndoButton from '@/components/UndoButton';
 import { History } from '@/components/History';
 import Coins from '@/components/Coins';
@@ -11,8 +9,6 @@ import { GameOver } from '@/components/GameOver';
 import Highscore from '@/components/Highscore';
 
 export default function Home() {
-  const { score, isGameOver, restartGame, history } = useContext(GameContext);
-
   return (
     <div className="mx-auto py-8 w-full max-w-[296px] sm:max-w-[480px]">
       <Head>
@@ -39,12 +35,12 @@ export default function Home() {
             <p>The goal is to create a tile with the number 2048.</p>
           </span>
         </details>
-        <History history={history} />
+        <History />
       </main>
 
       <GameOver />
 
-      <footer className="text-center font-bold mt-4 text-sm">
+      <footer className="bg-background-primary bottom-0 sticky text-center font-bold p-2 mt-2 text-sm z-10">
         <a href="https://www.linkedin.com/in/adricvanvemden/" target="_blank" className="hover:underline">
           Made with 💜 by Adric
         </a>
