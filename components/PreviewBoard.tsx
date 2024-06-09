@@ -40,7 +40,7 @@ const PreviewBoard: React.FC<PreviewBoardProps> = ({ historyState }) => {
   return (
     <div className="preview-board">
       <div className="relative">
-        <div className="absolute z-10 m-1 inset-0 sm:m-2">{renderTiles}</div>
+        <div className="absolute z-10 m-[3px] inset-0 sm:m-2">{renderTiles}</div>
         <div className="grid grid-cols-4 bg-background-secondary rounded-md border-background-secondary border-4 sm:border-8">
           {renderGrid}
         </div>

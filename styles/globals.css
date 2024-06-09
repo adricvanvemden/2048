@@ -22,6 +22,12 @@
   @apply text-3xl leading-[65px] sm:text-5xl sm:leading-[100px];
 }
 
+.tile128.preview,
+.tile256.preview,
+.tile512.preview {
+  @apply text-2xl leading-[50px] sm:text-3xl sm:leading-[65px];
+}
+
 .tile1024,
 .tile2048,
 .tile4096,
@@ -29,6 +35,12 @@
   @apply text-2xl leading-[65px] sm:!text-4xl sm:!leading-[100px];
 }
 
+.tile1024.preview,
+.tile2048.preview,
+.tile4096.preview,
+.tile8192.preview {
+  @apply text-lg leading-[50px] sm:!text-2xl sm:!leading-[70px];
+}
 .tile4 {
   @apply bg-tile-4;
 }

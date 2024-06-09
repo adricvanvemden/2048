@@ -48,7 +48,7 @@ export default function Tile({ position, value, preview }: TileProps) {
   let tileClass = `absolute m-1 font-bold text-center rounded-[4px] bg-tile-2 text-text-primary transition-all duration-200 ease-in-out ${`tile${value}`}`;
 
   if (preview) {
-    tileClass += ` size-12 text-[16px] leading-[32px] sm:size-[66px] sm:m-[4px] sm:text-2xl sm:leading-[66px]`;
+    tileClass += ` preview size-12 text-[16px] leading-[50px] sm:size-[66px] sm:m-[4px] sm:text-2xl sm:leading-[66px]`;
   } else {
     tileClass += ` size-16 text-[32px] leading-[64px] sm:size-[100px] sm:m-2 sm:text-5xl sm:leading-[100px]`;
   }

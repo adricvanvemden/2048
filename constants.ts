@@ -5,5 +5,5 @@ export const CONTAINER_WIDTH_DESKTOP = 464; // pixels
 export const MERGE_ANIMATION_DURATION = 100; // ms
 export const MOVE_ANIMATION_DURATION = 200; // ms
 
-export const CONTAINER_WIDTH_MOBILE_PREVIEW = 220; // pixels
+export const CONTAINER_WIDTH_MOBILE_PREVIEW = 225; // pixels
 export const CONTAINER_WIDTH_DESKTOP_PREVIEW = 295; // pixels

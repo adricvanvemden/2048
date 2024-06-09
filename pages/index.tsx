@@ -33,9 +33,11 @@ export default function Home() {
         <Board />
         <details className="bg-white p-2 rounded  mt-4 text-sm sm:text-base">
           <summary className="rounded text-black font-bold">Game Instructions</summary>
-          <p>Use the W/A/S/D or the arrow keys to move the tiles in the corresponding direction.</p>
-          <p>When two tiles with the same number touch, they merge into one!</p>
-          <p>The goal is to create a tile with the number 2048.</p>
+          <span className="flex flex-col gap-2">
+            <p>Swipe or use the W/A/S/D or the arrow keys to move the tiles in the corresponding direction.</p>
+            <p>When two tiles with the same number touch, they merge into one!</p>
+            <p>The goal is to create a tile with the number 2048.</p>
+          </span>
         </details>
         <History history={history} />
       </main>
