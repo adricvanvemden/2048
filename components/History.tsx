@@ -7,8 +7,10 @@ export const History = () => {
   const showMax = 3;
 
   return (
-    <div className="history text-center">
+    <div className="history text-center flex flex-col">
       <h3 className="text-2xl font-bold my-2">Last moves</h3>
+      <span>Upto 100 moves are stored</span>
+      <span>Current history: {history.length - 2}</span>
       <div className="flex flex-wrap justify-center gap-4">
         {history
           .slice(1, -1)
@@ -16,7 +18,6 @@ export const History = () => {
           .reverse()
           .map((gameState, index) => (
             <div key={index} className="history-item">
-              <span className="font-bold">{history.length - index - 2}</span>
               <PreviewBoard historyState={gameState} />
             </div>
           ))}

@@ -1,4 +1,4 @@
-import { TILE_COUNT_PER_DIMENSION } from '@/constants';
+import { MAX_HISTORY_SIZE, TILE_COUNT_PER_DIMENSION } from '@/constants';
 import { MoveDirection, Tile, TileMap } from '@/types/types';
 import flattenDeep from '@/utils/helpers/flattenDeep';
 import { uid } from 'uid';
@@ -208,6 +208,11 @@ export default function gameReducer(state: GameState = initialState, action: Act
           isGameOver: state.isGameOver,
         },
       ];
+
+      if (newHistory.length > MAX_HISTORY_SIZE) {
+        newHistory.shift();
+      }
+
       newState = { ...state, history: newHistory };
       break;
     }
